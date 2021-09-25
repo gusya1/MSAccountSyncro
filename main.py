@@ -34,7 +34,7 @@ class MainWindow:
         scroll.grid(column=1, row=2, sticky=NSEW)
         self.text_browser.config(yscrollcommand=scroll.set)
 
-        self.calendar = Calendar(self.ui)
+        self.calendar = Calendar(self.ui, date_pattern='yyyy-mm-dd')
         self.calendar.grid(column=0, row=0, columnspan=2, sticky=NSEW)
         self.ui.mainloop()
 
@@ -117,10 +117,7 @@ class MainWindow:
 
     def get_calendar_datetime(self):
         date_str = self.calendar.get_date()
-        try:
-            return datetime.datetime.strptime(date_str, "%m/%d/%Y")
-        except ValueError:
-            return datetime.datetime.strptime(date_str, "%m/%d/%y")
+        return datetime.datetime.strptime(date_str, '%Y-%m-%d')
 
 
 if __name__ == "__main__":
