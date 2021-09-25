@@ -1,0 +1,10 @@
+
+venv
+.idea
+data
+__pycache__
+MSApi.egg-info
+dist
+
+MSApi
+settings.py
