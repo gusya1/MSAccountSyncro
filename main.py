@@ -1,5 +1,4 @@
 import datetime
-from settings import *
 from tkinter import *
 
 from MSApi.MSApi import MSApi, error_handler
@@ -8,6 +7,12 @@ from MSApi.properties import Expand, Filter
 from threading import Thread
 import tkinter.messagebox as mb
 from tkcalendar import Calendar
+
+try:
+    from settings import *
+except ImportError as e:
+    mb.showerror("Error", "settings.py not found!")
+    quit(1)
 
 
 class MainWindow:
@@ -52,7 +57,7 @@ class MainWindow:
             self.clear_text()
             self.generate_btn.configure(state='disabled')
 
-            date_obj = datetime.datetime.strptime(self.calendar.get_date(), "%m/%d/%y")
+            date_obj = self.get_calendar_datetime()
             date_filter = Filter.gte('deliveryPlannedMoment', date_obj.strftime('%Y-%m-%d'))
             date_filter += Filter().lt('deliveryPlannedMoment',
                                        (date_obj + datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
@@ -105,7 +110,17 @@ class MainWindow:
         except MSApiException as exception:
             self.print_text(str(exception))
             mb.showerror("Error", str(exception))
+        except Exception as exception:
+            self.print_text(str(exception))
+            mb.showerror("Error", "Unknown error: {}".format(str(exception)))
         self.generate_btn.configure(state='normal')
+
+    def get_calendar_datetime(self):
+        date_str = self.calendar.get_date()
+        try:
+            return datetime.datetime.strptime(date_str, "%m/%d/%Y")
+        except ValueError:
+            return datetime.datetime.strptime(date_str, "%m/%d/%y")
 
 
 if __name__ == "__main__":
